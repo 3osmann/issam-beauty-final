@@ -21,26 +21,42 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
 
-        const user = await prisma.user.findUnique({
-          where: { email: credentials.email as string },
-        });
+        const email = credentials.email as string;
+        const password = credentials.password as string;
 
-        if (!user || !user.password) return null;
+        // Check User model first (regular clients)
+        const user = await prisma.user.findUnique({ where: { email } });
 
-        const isValid = await bcrypt.compare(
-          credentials.password as string,
-          user.password
-        );
+        if (user && user.password) {
+          const isValid = await bcrypt.compare(password, user.password);
+          if (isValid && user.isActive) {
+            return {
+              id: user.id,
+              email: user.email,
+              name: user.name,
+              image: user.image,
+              role: user.role,
+            };
+          }
+        }
 
-        if (!isValid || !user.isActive) return null;
+        // Check Admin model (admin users)
+        const admin = await prisma.admin.findUnique({ where: { email } });
 
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          image: user.image,
-          role: user.role,
-        };
+        if (admin) {
+          const isValid = await bcrypt.compare(password, admin.password);
+          if (isValid) {
+            return {
+              id: admin.id,
+              email: admin.email,
+              name: admin.name,
+              image: null,
+              role: admin.role,
+            };
+          }
+        }
+
+        return null;
       },
     }),
   ],

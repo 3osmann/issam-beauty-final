@@ -318,11 +318,75 @@ async function main() {
   console.log(`✅ Coupons created`);
 
   // Create settings
-  await prisma.setting.create({ data: { key: "store_name", value: "Issam Beauty" } });
-  await prisma.setting.create({ data: { key: "store_email", value: "contact@issam-beauty.com" } });
-  await prisma.setting.create({ data: { key: "store_phone", value: "+216 XX XXX XXX" } });
-  await prisma.setting.create({ data: { key: "welcome_bonus", value: "20" } });
-  console.log(`✅ Settings created`);
+  const initialSettings = {
+    store_name: "Issam Beauty",
+    store_logo_accent: "ISSAM",
+    store_logo_text: " BEAUTY",
+    hero_title: "La Beauté,\\nUne Nouvelle\\nDimension",
+    hero_subtitle: "Découvrez notre collection exclusive de parfums et cosmétiques de luxe.",
+    hero_cta: "Découvrir la Collection",
+    hero_badge: "Collection Printemps 2026",
+    featured_title: "Produits Phares",
+    featured_subtitle: "Les pièces incontournables de notre collection",
+    bestseller_title: "Meilleures Ventes",
+    bestseller_subtitle: "Les produits les plus aimés par nos clientes",
+    newsletter_title: "Restez Inspirée",
+    newsletter_subtitle: "Recevez nos offres exclusives, nouveautés et conseils beauté en avant-première",
+    newsletter_placeholder: "Votre adresse email",
+    newsletter_cta: "S'abonner",
+    promo_banner_title: "-20% sur votre première commande",
+    promo_banner_subtitle: "Inscrivez-vous à notre newsletter et recevez un code promo exclusif pour bénéficier de 20% de réduction.",
+    promo_banner_code: "BIENVENUE20",
+    promo_banner_badge: "Offre Exclusive",
+    footer_about_text: "Issam Beauty est votre destination de luxe pour les parfums et cosmétiques haut de gamme. Découvrez l'excellence de la beauté.",
+    footer_email: "contact@issam-beauty.com",
+    footer_phone: "+216 XX XXX XXX",
+    footer_address: "Tunis, Tunisie",
+    social_instagram: "https://instagram.com/issam_beauty",
+    social_facebook: "https://facebook.com/issambeauty",
+    nav_links: JSON.stringify([
+      { label: "Nouveautés", href: "/products?sort=newest" },
+      { label: "Parfums", href: "/categories/parfums" },
+      { label: "Maquillage", href: "/categories/maquillage" },
+      { label: "Soins", href: "/categories/soins-visage" },
+      { label: "Promotions", href: "/products?discount=true" },
+    ]),
+    footer_links_boutique: JSON.stringify([
+      { label: "Parfums", href: "/categories/parfums" },
+      { label: "Maquillage", href: "/categories/maquillage" },
+      { label: "Soins Visage", href: "/categories/soins-visage" },
+      { label: "Soins Corps", href: "/categories/soins-corps" },
+      { label: "Nouveautés", href: "/products?sort=newest" },
+      { label: "Promotions", href: "/products?discount=true" },
+    ]),
+    footer_links_service: JSON.stringify([
+      { label: "Aide & Contact", href: "/contact" },
+      { label: "Livraison", href: "/livraison" },
+      { label: "Retours", href: "/retours" },
+      { label: "FAQ", href: "/faq" },
+      { label: "Carte Cadeau", href: "/carte-cadeau" },
+    ]),
+    footer_links_marque: JSON.stringify([
+      { label: "À Propos", href: "/about" },
+      { label: "Nos Magasins", href: "/magasins" },
+      { label: "Carrières", href: "/carrieres" },
+      { label: "Presse", href: "/presse" },
+    ]),
+    footer_legal: JSON.stringify([
+      { label: "Confidentialité", href: "/confidentialite" },
+      { label: "CGV", href: "/cgv" },
+      { label: "Mentions Légales", href: "/mentions-legales" },
+    ]),
+  };
+
+  for (const [key, value] of Object.entries(initialSettings)) {
+    await prisma.setting.upsert({
+      where: { key },
+      update: { value },
+      create: { key, value },
+    });
+  }
+  console.log(`✅ ${Object.keys(initialSettings).length} settings created`);
 
   console.log("\n🎉 Seed completed successfully!");
   console.log("\n📋 Login credentials:");

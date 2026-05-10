@@ -1,60 +1,37 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import {
-  Instagram,
-  Facebook,
-  Twitter,
-  Youtube,
-  Mail,
-  Phone,
-  MapPin,
-  ChevronRight,
-} from "lucide-react";
+import { Instagram, Facebook, Twitter, Youtube, Mail, Phone, MapPin } from "lucide-react";
 import Button from "@/components/ui/button";
 import Input from "@/components/ui/input";
 
-const footerLinks = {
-  boutique: [
-    { label: "Parfums", href: "/categories/parfums" },
-    { label: "Maquillage", href: "/categories/maquillage" },
-    { label: "Soins Visage", href: "/categories/soins-visage" },
-    { label: "Soins Corps", href: "/categories/soins-corps" },
-    { label: "Nouveautés", href: "/products?sort=newest" },
-    { label: "Promotions", href: "/products?discount=true" },
-  ],
-  service: [
-    { label: "Aide & Contact", href: "/contact" },
-    { label: "Livraison", href: "/livraison" },
-    { label: "Retours", href: "/retours" },
-    { label: "FAQ", href: "/faq" },
-    { label: "Carte Cadeau", href: "/carte-cadeau" },
-    { label: "Fidélité", href: "/fidelite" },
-  ],
-  marque: [
-    { label: "À Propos", href: "/about" },
-    { label: "Nos Magasins", href: "/magasins" },
-    { label: "Carrières", href: "/carrieres" },
-    { label: "Presse", href: "/presse" },
-    { label: "Partenaires", href: "/partenaires" },
-  ],
-  legal: [
-    { label: "Confidentialité", href: "/confidentialite" },
-    { label: "CGV", href: "/cgv" },
-    { label: "Mentions Légales", href: "/mentions-legales" },
-    { label: "Paramètres Cookies", href: "/cookies" },
-  ],
-};
-
-const socialLinks = [
-  { icon: Instagram, href: "#", label: "Instagram" },
-  { icon: Facebook, href: "#", label: "Facebook" },
-  { icon: Twitter, href: "#", label: "Twitter" },
-  { icon: Youtube, href: "#", label: "Youtube" },
-];
-
 export default function Footer() {
+  const [settings, setSettings] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    fetch("/api/admin/settings")
+      .then((r) => r.json())
+      .then(setSettings)
+      .catch(() => {});
+  }, []);
+
+  let footerLinksBoutique: { label: string; href: string }[] = [];
+  let footerLinksService: { label: string; href: string }[] = [];
+  let footerLinksMarque: { label: string; href: string }[] = [];
+  let footerLegal: { label: string; href: string }[] = [];
+
+  try { footerLinksBoutique = JSON.parse(settings.footer_links_boutique || "[]"); } catch {}
+  try { footerLinksService = JSON.parse(settings.footer_links_service || "[]"); } catch {}
+  try { footerLinksMarque = JSON.parse(settings.footer_links_marque || "[]"); } catch {}
+  try { footerLegal = JSON.parse(settings.footer_legal || "[]"); } catch {}
+
+  const aboutText = settings.footer_about_text || "Issam Beauty est votre destination de luxe pour les parfums et cosmétiques haut de gamme.";
+  const email = settings.footer_email || "contact@issam-beauty.com";
+  const phone = settings.footer_phone || "+216 XX XXX XXX";
+  const address = settings.footer_address || "Tunis, Tunisie";
+
   return (
     <footer className="relative bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800">
       {/* Newsletter */}
@@ -68,7 +45,7 @@ export default function Footer() {
               viewport={{ once: true }}
               className="text-3xl lg:text-4xl font-serif font-bold mb-4"
             >
-              Restez <span className="text-gradient">Inspirée</span>
+              {settings.newsletter_title || "Restez Inspirée"}
             </motion.h2>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -77,7 +54,7 @@ export default function Footer() {
               transition={{ delay: 0.1 }}
               className="text-slate-600 dark:text-slate-400 mb-8"
             >
-              Recevez nos offres exclusives, nouveautés et conseils beauté en avant-première
+              {settings.newsletter_subtitle || "Recevez nos offres exclusives et nouveautés en avant-première"}
             </motion.p>
             <motion.form
               initial={{ opacity: 0, y: 20 }}
@@ -88,42 +65,37 @@ export default function Footer() {
               className="flex gap-3 max-w-md mx-auto"
             >
               <div className="flex-1">
-                <Input
-                  type="email"
-                  placeholder="Votre adresse email"
-                  className="h-12"
-                />
+                <Input type="email" placeholder={settings.newsletter_placeholder || "Votre adresse email"} className="h-12" />
               </div>
               <Button type="submit" size="lg" variant="primary">
-                S&apos;abonner
+                {settings.newsletter_cta || "S'abonner"}
               </Button>
             </motion.form>
           </div>
         </div>
       </div>
 
-      {/* Main Footer */}
       <div className="max-w-7xl mx-auto px-4 lg:px-6 py-12 lg:py-16">
         <div className="grid grid-cols-2 lg:grid-cols-6 gap-8 lg:gap-12">
-          {/* Brand */}
           <div className="col-span-2 lg:col-span-2">
             <Link href="/">
               <h3 className="text-2xl font-serif font-bold mb-4">
-                <span className="text-gradient">ISSAM</span>
-                <span className="text-slate-900 dark:text-white"> BEAUTY</span>
+                <span className="text-gradient">{settings.store_logo_accent || "ISSAM"}</span>
+                <span className="text-slate-900 dark:text-white">{settings.store_logo_text ? settings.store_logo_text.replace(settings.store_logo_accent || "", "") : " BEAUTY"}</span>
               </h3>
             </Link>
             <p className="text-sm text-slate-500 dark:text-slate-400 mb-6 leading-relaxed">
-              Issam Beauty est votre destination de luxe pour les parfums et cosmétiques haut de gamme.
-              Découvrez l&apos;excellence de la beauté.
+              {aboutText}
             </p>
             <div className="flex items-center gap-3">
-              {socialLinks.map((social) => (
-                <a
-                  key={social.label}
-                  href={social.href}
+              {[
+                { icon: Instagram, href: settings.social_instagram || "#" },
+                { icon: Facebook, href: settings.social_facebook || "#" },
+                { icon: Twitter, href: settings.social_twitter || "#" },
+                { icon: Youtube, href: settings.social_youtube || "#" },
+              ].map((social, i) => (
+                <a key={i} href={social.href}
                   className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-primary-100 dark:hover:bg-primary-900/30 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:text-primary-500 transition-all duration-300"
-                  aria-label={social.label}
                 >
                   <social.icon className="w-4 h-4" />
                 </a>
@@ -131,109 +103,66 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Links */}
           <div>
-            <h4 className="font-serif font-semibold text-sm uppercase tracking-wider text-slate-900 dark:text-white mb-4">
-              Boutique
-            </h4>
+            <h4 className="font-serif font-semibold text-sm uppercase tracking-wider text-slate-900 dark:text-white mb-4">Boutique</h4>
             <ul className="space-y-3">
-              {footerLinks.boutique.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-slate-500 dark:text-slate-400 hover:text-primary-500 dark:hover:text-primary-400 transition-colors"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
+              {footerLinksBoutique.map((link: any) => (
+                <li key={link.href}><Link href={link.href} className="text-sm text-slate-500 dark:text-slate-400 hover:text-primary-500 dark:hover:text-primary-400 transition-colors">{link.label}</Link></li>
               ))}
             </ul>
           </div>
 
           <div>
-            <h4 className="font-serif font-semibold text-sm uppercase tracking-wider text-slate-900 dark:text-white mb-4">
-              Service
-            </h4>
+            <h4 className="font-serif font-semibold text-sm uppercase tracking-wider text-slate-900 dark:text-white mb-4">Service</h4>
             <ul className="space-y-3">
-              {footerLinks.service.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-slate-500 dark:text-slate-400 hover:text-primary-500 dark:hover:text-primary-400 transition-colors"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
+              {footerLinksService.map((link: any) => (
+                <li key={link.href}><Link href={link.href} className="text-sm text-slate-500 dark:text-slate-400 hover:text-primary-500 dark:hover:text-primary-400 transition-colors">{link.label}</Link></li>
               ))}
             </ul>
           </div>
 
           <div>
-            <h4 className="font-serif font-semibold text-sm uppercase tracking-wider text-slate-900 dark:text-white mb-4">
-              Marque
-            </h4>
+            <h4 className="font-serif font-semibold text-sm uppercase tracking-wider text-slate-900 dark:text-white mb-4">Marque</h4>
             <ul className="space-y-3">
-              {footerLinks.marque.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-slate-500 dark:text-slate-400 hover:text-primary-500 dark:hover:text-primary-400 transition-colors"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
+              {footerLinksMarque.map((link: any) => (
+                <li key={link.href}><Link href={link.href} className="text-sm text-slate-500 dark:text-slate-400 hover:text-primary-500 dark:hover:text-primary-400 transition-colors">{link.label}</Link></li>
               ))}
             </ul>
           </div>
 
           <div>
-            <h4 className="font-serif font-semibold text-sm uppercase tracking-wider text-slate-900 dark:text-white mb-4">
-              Légal
-            </h4>
+            <h4 className="font-serif font-semibold text-sm uppercase tracking-wider text-slate-900 dark:text-white mb-4">Légal</h4>
             <ul className="space-y-3">
-              {footerLinks.legal.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-slate-500 dark:text-slate-400 hover:text-primary-500 dark:hover:text-primary-400 transition-colors"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
+              {footerLegal.map((link: any) => (
+                <li key={link.href}><Link href={link.href} className="text-sm text-slate-500 dark:text-slate-400 hover:text-primary-500 dark:hover:text-primary-400 transition-colors">{link.label}</Link></li>
               ))}
             </ul>
           </div>
         </div>
 
-        {/* Contact Info */}
         <div className="mt-12 pt-8 border-t border-slate-200 dark:border-slate-800">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="flex items-center gap-3 text-sm text-slate-500 dark:text-slate-400">
               <MapPin className="w-4 h-4 text-primary-500 flex-shrink-0" />
-              <span>Tunis, Tunisie</span>
+              <span>{address}</span>
             </div>
             <div className="flex items-center gap-3 text-sm text-slate-500 dark:text-slate-400">
               <Phone className="w-4 h-4 text-primary-500 flex-shrink-0" />
-              <span>+216 XX XXX XXX</span>
+              <span>{phone}</span>
             </div>
             <div className="flex items-center gap-3 text-sm text-slate-500 dark:text-slate-400">
               <Mail className="w-4 h-4 text-primary-500 flex-shrink-0" />
-              <span>contact@issam-beauty.com</span>
+              <span>{email}</span>
             </div>
           </div>
         </div>
 
-        {/* Bottom Bar */}
         <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-xs text-slate-400 dark:text-slate-500">
-            &copy; {new Date().getFullYear()} Issam Beauty. Tous droits réservés.
+            &copy; {new Date().getFullYear()} {settings.store_name || "Issam Beauty"}. Tous droits réservés.
           </p>
           <div className="flex items-center gap-4 text-xs text-slate-400 dark:text-slate-500">
-            <span>Paiement sécurisé</span>
-            <span>•</span>
-            <span>Livraison offerte dès 100 TND</span>
-            <span>•</span>
-            <span>Retours sous 14 jours</span>
+            <span>Paiement sécurisé</span><span>•</span><span>Livraison offerte dès 100 TND</span><span>•</span><span>Retours sous 14 jours</span>
           </div>
         </div>
       </div>

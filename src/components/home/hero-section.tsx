@@ -6,7 +6,11 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, Sparkles } from "lucide-react";
 import Button from "@/components/ui/button";
 
-export default function HeroSection() {
+interface HeroSectionProps {
+  settings?: Record<string, string>;
+}
+
+export default function HeroSection({ settings = {} }: HeroSectionProps) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -57,7 +61,7 @@ export default function HeroSection() {
             >
               <Sparkles className="w-4 h-4 text-primary-500" />
               <span className="text-xs font-medium text-slate-600 dark:text-slate-300">
-                Collection Printemps 2026
+                {settings.hero_badge || "Collection Printemps 2026"}
               </span>
             </motion.div>
 
@@ -67,11 +71,15 @@ export default function HeroSection() {
               transition={{ duration: 0.8, delay: 0.1 }}
               className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-serif font-bold leading-[1.1] mb-6"
             >
-              La Beauté,
-              <br />
-              <span className="text-gradient">Une Nouvelle</span>
-              <br />
-              Dimension
+              {(() => {
+                const parts = (settings.hero_title || "La Beauté,\nUne Nouvelle\nDimension").split("\\n");
+                return parts.map((line: string, i: number) => (
+                  <span key={i}>
+                    {i === 1 ? <span className="text-gradient">{line}</span> : line}
+                    {i < parts.length - 1 && <br />}
+                  </span>
+                ));
+              })()}
             </motion.h1>
 
             <motion.p
@@ -80,8 +88,7 @@ export default function HeroSection() {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="text-lg sm:text-xl text-slate-600 dark:text-slate-300 max-w-lg mx-auto lg:mx-0 mb-8 leading-relaxed"
             >
-              Découvrez notre collection exclusive de parfums et cosmétiques de luxe.
-              L&apos;élégance à l&apos;état pur.
+              {settings.hero_subtitle || "Découvrez notre collection exclusive de parfums et cosmétiques de luxe.\nL'élégance à l'état pur."}
             </motion.p>
 
             <motion.div
@@ -92,7 +99,7 @@ export default function HeroSection() {
             >
               <Link href="/products">
                 <Button variant="primary" size="xl" className="rounded-2xl">
-                  Découvrir la Collection
+                  {settings.hero_cta || "Découvrir la Collection"}
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
               </Link>
