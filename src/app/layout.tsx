@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ThemeProvider } from "@/components/theme-provider";
 import AuthSessionProvider from "@/components/session-provider";
+import { LocaleProvider } from "@/lib/locale-context";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import CartDrawer from "@/components/layout/cart-drawer";
@@ -51,9 +52,11 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <Header />
-            <main>{children}</main>
-            <Footer />
+            <LocaleProvider>
+              <Header />
+              <main>{children}</main>
+              <Footer />
+            </LocaleProvider>
             <CartDrawer />
             <Toaster />
           </ThemeProvider>

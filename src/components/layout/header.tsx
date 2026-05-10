@@ -10,8 +10,10 @@ import { useTheme } from "next-themes";
 import { useCartStore } from "@/stores/cart-store";
 import { useWishlistStore } from "@/stores/wishlist-store";
 import { useUIStore } from "@/stores/ui-store";
+import { useLocale } from "@/lib/locale-context";
 import { cn } from "@/lib/utils";
 import Button from "@/components/ui/button";
+import LanguageSwitcher from "@/components/layout/language-switcher";
 
 export default function Header() {
   const pathname = usePathname();
@@ -19,6 +21,7 @@ export default function Header() {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [settings, setSettings] = useState<Record<string, string>>({});
   const { theme, setTheme } = useTheme();
+  const { t } = useLocale();
   const cartCount = useCartStore((s) => s.getItemCount());
   const wishlistCount = useWishlistStore((s) => s.items.length);
   const { isSearchOpen, setSearchOpen, toggleCart } = useUIStore();
@@ -64,13 +67,14 @@ export default function Header() {
       >
         <div className="hidden lg:block border-b border-slate-200/30 dark:border-slate-700/30">
           <div className="max-w-7xl mx-auto px-6 h-9 flex items-center justify-between text-[11px] uppercase tracking-widest text-slate-500 dark:text-slate-400">
-            <span>Livraison offerte dès 100 TND</span>
+            <span>{t("product.free_shipping")} dès 100 TND</span>
             <div className="flex items-center gap-6">
+              <LanguageSwitcher />
               <button onClick={() => setTheme(theme === "dark" ? "light" : "dark")} className="hover:text-primary-500 transition-colors" suppressHydrationWarning>
                 {theme === "dark" ? "☀️" : "🌙"}
               </button>
-              <Link href="/about" className="hover:text-primary-500 transition-colors">À Propos</Link>
-              <Link href="/contact" className="hover:text-primary-500 transition-colors">Contact</Link>
+              <Link href="/about" className="hover:text-primary-500 transition-colors">{t("nav.about")}</Link>
+              <Link href="/contact" className="hover:text-primary-500 transition-colors">{t("nav.contact")}</Link>
             </div>
           </div>
         </div>
@@ -123,7 +127,7 @@ export default function Header() {
               <Link href="/login" className="hidden sm:block">
                 <Button variant="ghost" size="sm" className="rounded-xl">
                   <User className="w-4 h-4 mr-1.5" />
-                  Compte
+                  {t("nav.account")}
                 </Button>
               </Link>
             </div>
@@ -149,10 +153,10 @@ export default function Header() {
                 <hr className="my-2 border-slate-200 dark:border-slate-700" />
                 <Link href="/wishlist" onClick={() => setMobileMenuOpen(false)}
                   className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                ><Heart className="w-4 h-4" />Favoris</Link>
+                ><Heart className="w-4 h-4" />{t("nav.wishlist")}</Link>
                 <Link href="/account" onClick={() => setMobileMenuOpen(false)}
                   className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                ><User className="w-4 h-4" />Mon Compte</Link>
+                ><User className="w-4 h-4" />{t("nav.account")}</Link>
               </div>
             </motion.div>
           )}
@@ -176,14 +180,14 @@ export default function Header() {
               <div className="max-w-2xl mx-auto">
                 <div className="relative">
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                  <input autoFocus type="text" placeholder="Rechercher un produit, une marque..."
+                  <input autoFocus type="text" placeholder={t("nav.search") + "..."}
                     className="w-full h-14 pl-12 pr-12 text-lg bg-transparent border-b-2 border-slate-200 dark:border-slate-700 focus:border-primary-500 outline-none"
                   />
                   <button onClick={() => setSearchOpen(false)} className="absolute right-0 top-1/2 -translate-y-1/2 p-2">
                     <X className="w-5 h-5" />
                   </button>
                 </div>
-                <div className="mt-6 text-sm text-slate-400">Suggestions : Parfums, Crème, Maquillage, Dior, Chanel</div>
+                <div className="mt-6 text-sm text-slate-400">{t("common.search")} : Parfums, Crème, Maquillage, Dior, Chanel</div>
               </div>
             </motion.div>
           </motion.div>
