@@ -1,35 +1,29 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Search as SearchIcon, X } from "lucide-react";
+import { Search as SearchIcon } from "lucide-react";
 import ProductGrid from "@/components/product/product-grid";
 import Input from "@/components/ui/input";
 
-const allProducts = [
-  { id: "1", name: "J'adore Dior", slug: "jadore-dior", price: 250, comparePrice: 320, isNew: true, images: [{ url: "/images/product-1.jpg", alt: "", isPrimary: true }], reviews: [{ rating: 5 }], category: { name: "Parfums", slug: "parfums" } },
-  { id: "2", name: "Chanel N°5", slug: "chanel-no5", price: 350, comparePrice: null, isFeatured: true, images: [{ url: "/images/product-2.jpg", alt: "", isPrimary: true }], reviews: [{ rating: 5 }], category: { name: "Parfums", slug: "parfums" } },
-  { id: "3", name: "Crème Hydratation Premium", slug: "creme-hydratation-premium", price: 180, comparePrice: 240, images: [{ url: "/images/product-3.jpg", alt: "", isPrimary: true }], reviews: [{ rating: 4 }], category: { name: "Soins Visage", slug: "soins-visage" } },
-  { id: "4", name: "Sérum Anti-Âge Pro", slug: "serum-anti-age-pro", price: 290, comparePrice: null, images: [{ url: "/images/product-4.jpg", alt: "", isPrimary: true }], reviews: [{ rating: 5 }], category: { name: "Soins Visage", slug: "soins-visage" } },
-];
-
 export default function SearchPage() {
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState(allProducts);
+  const [results, setResults] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const handleSearch = (value: string) => {
-    setQuery(value);
-    if (!value.trim()) {
-      setResults(allProducts);
+  useEffect(() => {
+    if (!query.trim()) {
+      fetch("/api/products")
+        .then((r) => r.json())
+        .then(setResults);
       return;
     }
-    const filtered = allProducts.filter(
-      (p) =>
-        p.name.toLowerCase().includes(value.toLowerCase()) ||
-        p.category.name.toLowerCase().includes(value.toLowerCase())
-    );
-    setResults(filtered);
-  };
+    setLoading(true);
+    fetch(`/api/products?search=${encodeURIComponent(query)}`)
+      .then((r) => r.json())
+      .then(setResults)
+      .finally(() => setLoading(false));
+  }, [query]);
 
   return (
     <div className="min-h-screen py-8 lg:py-12">
@@ -37,9 +31,9 @@ export default function SearchPage() {
         <div className="max-w-xl mx-auto mb-8">
           <Input
             icon={<SearchIcon className="w-5 h-5" />}
-            placeholder="Rechercher un produit, une marque, une catégorie..."
+            placeholder="Rechercher un produit, une marque..."
             value={query}
-            onChange={(e) => handleSearch(e.target.value)}
+            onChange={(e) => setQuery(e.target.value)}
             className="h-14 text-lg rounded-2xl"
             autoFocus
           />
@@ -47,19 +41,29 @@ export default function SearchPage() {
 
         {query && (
           <p className="text-sm text-slate-500 mb-6">
-            {results.length} résultat(s) pour &ldquo;{query}&rdquo;
+            {loading ? "Recherche..." : `${results.length} résultat(s) pour "${query}"`}
           </p>
         )}
 
-        <ProductGrid products={results} />
+        {loading ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+              <div key={i} className="animate-pulse">
+                <div className="aspect-[3/4] rounded-2xl bg-slate-100 dark:bg-slate-800 mb-4" />
+                <div className="h-4 bg-slate-100 dark:bg-slate-800 rounded w-2/3 mb-2" />
+                <div className="h-3 bg-slate-100 dark:bg-slate-800 rounded w-1/2" />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <ProductGrid products={results} />
+        )}
 
-        {results.length === 0 && query && (
+        {!loading && results.length === 0 && query && (
           <div className="text-center py-20">
             <SearchIcon className="w-16 h-16 mx-auto text-slate-200 dark:text-slate-700 mb-4" />
             <h3 className="text-lg font-semibold mb-2">Aucun résultat trouvé</h3>
-            <p className="text-sm text-slate-500">
-              Essayez d&apos;autres termes de recherche
-            </p>
+            <p className="text-sm text-slate-500">Essayez d&apos;autres termes de recherche</p>
           </div>
         )}
       </div>

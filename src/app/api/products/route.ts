@@ -4,23 +4,46 @@ import { prisma } from "@/lib/prisma";
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
+    const slug = searchParams.get("slug");
     const category = searchParams.get("category");
     const featured = searchParams.get("featured");
     const trending = searchParams.get("trending");
     const bestseller = searchParams.get("bestseller");
     const search = searchParams.get("search");
     const sort = searchParams.get("sort");
+    const discount = searchParams.get("discount");
+
+    if (slug) {
+      const product = await prisma.product.findUnique({
+        where: { slug },
+        include: {
+          images: { orderBy: { sortOrder: "asc" } },
+          category: true,
+          reviews: {
+            include: { user: { select: { name: true, image: true } } },
+            orderBy: { createdAt: "desc" },
+          },
+        },
+      });
+      return NextResponse.json(product);
+    }
 
     const where: any = { isActive: true };
 
-    if (category) where.category = { slug: category };
+    if (category) {
+      where.category = { slug: category };
+    }
     if (featured === "true") where.isFeatured = true;
     if (trending === "true") where.isTrending = true;
     if (bestseller === "true") where.isBestSeller = true;
+    if (discount === "true") {
+      where.comparePrice = { not: null };
+    }
     if (search) {
       where.OR = [
         { name: { contains: search, mode: "insensitive" } },
         { description: { contains: search, mode: "insensitive" } },
+        { brand: { contains: search, mode: "insensitive" } },
       ];
     }
 
@@ -33,8 +56,8 @@ export async function GET(req: Request) {
       where,
       include: {
         images: { orderBy: { sortOrder: "asc" } },
-        category: true,
-        reviews: true,
+        category: { select: { name: true, slug: true } },
+        reviews: { select: { rating: true } },
       },
       orderBy,
     });
@@ -42,47 +65,7 @@ export async function GET(req: Request) {
     return NextResponse.json(products);
   } catch (error) {
     return NextResponse.json(
-      { error: "Erreur lors de la récupération des produits" },
-      { status: 500 }
-    );
-  }
-}
-
-export async function POST(req: Request) {
-  try {
-    const body = await req.json();
-    const product = await prisma.product.create({
-      data: {
-        name: body.name,
-        slug: body.slug,
-        description: body.description,
-        shortDesc: body.shortDesc,
-        price: parseFloat(body.price),
-        comparePrice: body.comparePrice ? parseFloat(body.comparePrice) : null,
-        sku: body.sku,
-        quantity: parseInt(body.quantity),
-        categoryId: body.categoryId,
-        brand: body.brand,
-        isFeatured: body.isFeatured || false,
-        isTrending: body.isTrending || false,
-        isBestSeller: body.isBestSeller || false,
-        gender: body.gender || "women",
-        tags: body.tags || [],
-        images: {
-          create: (body.images || []).map((url: string, i: number) => ({
-            url,
-            isPrimary: i === 0,
-            sortOrder: i,
-          })),
-        },
-      },
-      include: { images: true, category: true },
-    });
-
-    return NextResponse.json(product, { status: 201 });
-  } catch (error) {
-    return NextResponse.json(
-      { error: "Erreur lors de la création du produit" },
+      { error: "Erreur lors de la récupération" },
       { status: 500 }
     );
   }

@@ -132,6 +132,7 @@ model Product {
   isFeatured    Boolean  @default(false)
   isTrending    Boolean  @default(false)
   isBestSeller  Boolean  @default(false)
+  isNew         Boolean  @default(false)
   brand         String?
   weight        Decimal? @db.Decimal(8, 2)
   dimensions    String?
