@@ -4,6 +4,7 @@ import { useRef } from "react";
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, Sparkles } from "lucide-react";
+import { useLocale } from "@/lib/locale-context";
 import Button from "@/components/ui/button";
 
 interface HeroSectionProps {
@@ -12,6 +13,7 @@ interface HeroSectionProps {
 
 export default function HeroSection({ settings = {} }: HeroSectionProps) {
   const ref = useRef<HTMLDivElement>(null);
+  const { t } = useLocale();
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"],
@@ -105,7 +107,7 @@ export default function HeroSection({ settings = {} }: HeroSectionProps) {
               </Link>
               <Link href="/categories">
                 <Button variant="outline" size="xl" className="rounded-2xl">
-                  Nos Catégories
+                  {t("nav.categories")}
                 </Button>
               </Link>
             </motion.div>

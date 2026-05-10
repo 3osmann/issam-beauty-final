@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import { useLocale } from "@/lib/locale-context";
 
 const categories = [
   {
@@ -37,6 +38,7 @@ const categories = [
 ];
 
 export default function CategoriesShowcase() {
+  const { t } = useLocale();
   return (
     <section className="py-16 lg:py-24 bg-slate-50/50 dark:bg-slate-900/50">
       <div className="max-w-7xl mx-auto px-4 lg:px-6">
@@ -47,10 +49,10 @@ export default function CategoriesShowcase() {
           className="text-center mb-12"
         >
           <h2 className="text-3xl lg:text-5xl font-serif font-bold mb-4">
-            Nos Catégories
+            {t("nav.categories")}
           </h2>
           <p className="text-slate-500 dark:text-slate-400 max-w-xl mx-auto">
-            Explorez notre sélection de produits de beauté haut de gamme
+            {t("home.explore_categories")}
           </p>
         </motion.div>
 
@@ -83,8 +85,8 @@ export default function CategoriesShowcase() {
                   <p className="text-sm text-white/70 mb-3 line-clamp-1">
                     {cat.description}
                   </p>
-                  <span className="inline-flex items-center text-xs font-medium text-white/90 group-hover:text-white transition-colors">
-                    Découvrir
+                    <span className="inline-flex items-center text-xs font-medium text-white/90 group-hover:text-white transition-colors">
+                    {t("home.discover")}
                     <ArrowRight className="ml-1 w-3 h-3 group-hover:translate-x-1 transition-transform" />
                   </span>
                 </div>

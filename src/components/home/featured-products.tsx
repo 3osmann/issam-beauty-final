@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import { useLocale } from "@/lib/locale-context";
 import ProductGrid from "@/components/product/product-grid";
 import Button from "@/components/ui/button";
 
@@ -19,8 +20,9 @@ export default function FeaturedProducts({
   subtitle,
   products,
   linkHref = "/products",
-  linkLabel = "Voir tout",
+  linkLabel,
 }: FeaturedProductsProps) {
+  const { t } = useLocale();
   return (
     <section className="py-16 lg:py-24">
       <div className="max-w-7xl mx-auto px-4 lg:px-6">
@@ -54,7 +56,7 @@ export default function FeaturedProducts({
           >
             <Link href={linkHref}>
               <Button variant="outline" size="lg">
-                {linkLabel}
+                {linkLabel || t("common.view")}
                 <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
             </Link>

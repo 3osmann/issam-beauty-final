@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Plus, Minus, ShoppingBag, Trash2 } from "lucide-react";
 import { useCartStore } from "@/stores/cart-store";
 import { useUIStore } from "@/stores/ui-store";
+import { useLocale } from "@/lib/locale-context";
 import { formatPrice, cn } from "@/lib/utils";
 import Button from "@/components/ui/button";
 
@@ -13,6 +14,7 @@ export default function CartDrawer() {
   const { items, removeItem, updateQuantity, getTotal, getItemCount } =
     useCartStore();
   const { isCartOpen, setCartOpen } = useUIStore();
+  const { t } = useLocale();
 
   return (
     <AnimatePresence>
@@ -35,8 +37,8 @@ export default function CartDrawer() {
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-slate-200 dark:border-slate-700">
               <div>
-                <h2 className="text-xl font-serif font-semibold">Mon Panier</h2>
-                <p className="text-sm text-slate-500">{getItemCount()} article(s)</p>
+                <h2 className="text-xl font-serif font-semibold">{t("cart.title")}</h2>
+                <p className="text-sm text-slate-500">{getItemCount()} {t("product.items")}</p>
               </div>
               <button
                 onClick={() => setCartOpen(false)}
@@ -51,12 +53,12 @@ export default function CartDrawer() {
               {items.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-full text-center">
                   <ShoppingBag className="w-16 h-16 text-slate-200 dark:text-slate-700 mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">Votre panier est vide</h3>
+                  <h3 className="text-lg font-semibold mb-2">{t("cart.empty")}</h3>
                   <p className="text-sm text-slate-500 mb-6">
-                    Découvrez notre collection et ajoutez vos produits préférés
+                    {t("cart.empty_desc")}
                   </p>
                   <Button onClick={() => setCartOpen(false)}>
-                    Découvrir la boutique
+                    {t("cart.continue_shopping")}
                   </Button>
                 </div>
               ) : (
@@ -126,24 +128,24 @@ export default function CartDrawer() {
             {items.length > 0 && (
               <div className="border-t border-slate-200 dark:border-slate-700 p-6 space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-slate-500">Sous-total</span>
+                  <span className="text-sm text-slate-500">{t("cart.subtotal")}</span>
                   <span className="text-lg font-semibold">
                     {formatPrice(getTotal())}
                   </span>
                 </div>
                 <p className="text-xs text-slate-400">
-                  Livraison calculée à l&apos;étape suivante
+                  {t("cart.shipping")} calculée à l&apos;étape suivante
                 </p>
                 <Link href="/checkout" onClick={() => setCartOpen(false)}>
                   <Button fullWidth size="lg">
-                    Commander
+                    {t("cart.checkout")}
                   </Button>
                 </Link>
                 <button
                   onClick={() => setCartOpen(false)}
                   className="w-full text-center text-sm text-slate-500 hover:text-primary-500 transition-colors"
                 >
-                  Continuer mes achats
+                  {t("cart.continue_shopping")}
                 </button>
               </div>
             )}

@@ -31,7 +31,10 @@
     "newsletter_subtitle": "Get exclusive offers and early access to new arrivals",
     "newsletter_placeholder": "Your email address",
     "newsletter_cta": "Subscribe",
-    "instagram": "Follow us on Instagram"
+    "instagram": "Follow us on Instagram",
+    "explore_categories": "Explore our selection of high-end beauty products",
+    "discover": "Discover",
+    "share_hashtag": "Share your beauty with #IssamBeauty"
   },
   "product": {
     "add_to_cart": "Add to Cart",
@@ -47,7 +50,8 @@
     "quantity": "Quantity",
     "total": "Total",
     "discount": "Save",
-    "free_shipping": "Free Shipping"
+    "free_shipping": "Free Shipping",
+    "items": "item(s)"
   },
   "cart": {
     "title": "Your Cart",
@@ -83,6 +87,13 @@
     "quick_links": "Quick Links",
     "customer_service": "Customer Service",
     "contact_us": "Contact Us",
+    "shop": "Shop",
+    "service": "Service",
+    "brand": "Brand",
+    "legal": "Legal",
+    "secure_payment": "Secure Payment",
+    "free_shipping": "Free Shipping",
+    "returns": "14-Day Returns",
     "faq": "FAQ",
     "shipping_returns": "Shipping & Returns",
     "size_guide": "Size Guide",

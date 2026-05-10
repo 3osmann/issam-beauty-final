@@ -4,11 +4,13 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Instagram, Facebook, Twitter, Youtube, Mail, Phone, MapPin } from "lucide-react";
+import { useLocale } from "@/lib/locale-context";
 import Button from "@/components/ui/button";
 import Input from "@/components/ui/input";
 
 export default function Footer() {
   const [settings, setSettings] = useState<Record<string, string>>({});
+  const { t } = useLocale();
 
   useEffect(() => {
     fetch("/api/admin/settings")
@@ -104,7 +106,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="font-serif font-semibold text-sm uppercase tracking-wider text-slate-900 dark:text-white mb-4">Boutique</h4>
+            <h4 className="font-serif font-semibold text-sm uppercase tracking-wider text-slate-900 dark:text-white mb-4">{t("footer.shop")}</h4>
             <ul className="space-y-3">
               {footerLinksBoutique.map((link: any) => (
                 <li key={link.href}><Link href={link.href} className="text-sm text-slate-500 dark:text-slate-400 hover:text-primary-500 dark:hover:text-primary-400 transition-colors">{link.label}</Link></li>
@@ -113,7 +115,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="font-serif font-semibold text-sm uppercase tracking-wider text-slate-900 dark:text-white mb-4">Service</h4>
+            <h4 className="font-serif font-semibold text-sm uppercase tracking-wider text-slate-900 dark:text-white mb-4">{t("footer.service")}</h4>
             <ul className="space-y-3">
               {footerLinksService.map((link: any) => (
                 <li key={link.href}><Link href={link.href} className="text-sm text-slate-500 dark:text-slate-400 hover:text-primary-500 dark:hover:text-primary-400 transition-colors">{link.label}</Link></li>
@@ -122,7 +124,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="font-serif font-semibold text-sm uppercase tracking-wider text-slate-900 dark:text-white mb-4">Marque</h4>
+            <h4 className="font-serif font-semibold text-sm uppercase tracking-wider text-slate-900 dark:text-white mb-4">{t("footer.brand")}</h4>
             <ul className="space-y-3">
               {footerLinksMarque.map((link: any) => (
                 <li key={link.href}><Link href={link.href} className="text-sm text-slate-500 dark:text-slate-400 hover:text-primary-500 dark:hover:text-primary-400 transition-colors">{link.label}</Link></li>
@@ -131,7 +133,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="font-serif font-semibold text-sm uppercase tracking-wider text-slate-900 dark:text-white mb-4">Légal</h4>
+            <h4 className="font-serif font-semibold text-sm uppercase tracking-wider text-slate-900 dark:text-white mb-4">{t("footer.legal")}</h4>
             <ul className="space-y-3">
               {footerLegal.map((link: any) => (
                 <li key={link.href}><Link href={link.href} className="text-sm text-slate-500 dark:text-slate-400 hover:text-primary-500 dark:hover:text-primary-400 transition-colors">{link.label}</Link></li>
@@ -159,10 +161,10 @@ export default function Footer() {
 
         <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-xs text-slate-400 dark:text-slate-500">
-            &copy; {new Date().getFullYear()} {settings.store_name || "Issam Beauty"}. Tous droits réservés.
+            &copy; {new Date().getFullYear()} {settings.store_name || "Issam Beauty"}. {t("footer.rights")}
           </p>
           <div className="flex items-center gap-4 text-xs text-slate-400 dark:text-slate-500">
-            <span>Paiement sécurisé</span><span>•</span><span>Livraison offerte dès 100 TND</span><span>•</span><span>Retours sous 14 jours</span>
+            <span>{t("footer.secure_payment")}</span><span>•</span><span>{t("footer.free_shipping")} dès 100 TND</span><span>•</span><span>{t("footer.returns")}</span>
           </div>
         </div>
       </div>

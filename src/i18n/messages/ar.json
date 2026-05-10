@@ -31,7 +31,10 @@
     "newsletter_subtitle": "احصلي على العروض الحصرية وأحدث المنتجات أولاً",
     "newsletter_placeholder": "بريدك الإلكتروني",
     "newsletter_cta": "اشتراك",
-    "instagram": "تابعونا على إنستغرام"
+    "instagram": "تابعونا على إنستغرام",
+    "explore_categories": "استكشف مجموعتنا من منتجات التجميل الفاخرة",
+    "discover": "اكتشف",
+    "share_hashtag": "شاركي جمالك مع #IssamBeauty"
   },
   "product": {
     "add_to_cart": "أضف إلى السلة",
@@ -47,7 +50,8 @@
     "quantity": "الكمية",
     "total": "المجموع",
     "discount": "وفر",
-    "free_shipping": "توصيل مجاني"
+    "free_shipping": "توصيل مجاني",
+    "items": "منتج(ات)"
   },
   "cart": {
     "title": "سلة التسوق",
@@ -83,6 +87,13 @@
     "quick_links": "روابط سريعة",
     "customer_service": "خدمة العملاء",
     "contact_us": "اتصل بنا",
+    "shop": "المتجر",
+    "service": "الخدمات",
+    "brand": "العلامة التجارية",
+    "legal": "قانوني",
+    "secure_payment": "دفع آمن",
+    "free_shipping": "توصيل مجاني",
+    "returns": "إرجاع خلال 14 يوماً",
     "faq": "الأسئلة الشائعة",
     "shipping_returns": "الشحن والإرجاع",
     "size_guide": "دليل المقاسات",

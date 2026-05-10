@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Instagram } from "lucide-react";
+import { useLocale } from "@/lib/locale-context";
 
 const posts = [
   { id: 1, label: "Glamour" },
@@ -13,6 +14,7 @@ const posts = [
 ];
 
 export default function InstagramSection() {
+  const { t } = useLocale();
   return (
     <section className="py-16 lg:py-24">
       <div className="max-w-7xl mx-auto px-4 lg:px-6">
@@ -27,10 +29,10 @@ export default function InstagramSection() {
             <span className="text-xs font-medium">@issam_beauty</span>
           </div>
           <h2 className="text-3xl lg:text-5xl font-serif font-bold mb-4">
-            Suivez-nous sur Instagram
+            {t("home.instagram")}
           </h2>
           <p className="text-slate-500 dark:text-slate-400 max-w-xl mx-auto">
-            Partagez votre beauté avec #IssamBeauty
+            {t("home.share_hashtag")}
           </p>
         </motion.div>
 
